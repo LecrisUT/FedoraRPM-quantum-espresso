@@ -1,0 +1,21 @@
+packages:
+  quantum-espresso:
+    paths: [ quantum-espresso ]
+    specfile_path: quantum-espresso.spec
+    upstream_package_name: quantum-espresso
+    downstream_package_name: quantum-espresso
+
+actions:
+  get-current-version:
+    - sh -c 'rpmspec -q --qf "%{Version}" --srpm ${PACKIT_DOWNSTREAM_PACKAGE_NAME}.spec'
+  create-archive:
+    - sh -c 'echo ${PACKIT_DOWNSTREAM_PACKAGE_NAME}.spec'
+  fix-spec-file: [ ]
+    # Disable packit action
+
+jobs:
+  - job: copr_build
+    trigger: commit
+    update_release: false
+    owner: lecris
+    project: quantum-espresso
