@@ -141,7 +141,7 @@ done
 %files mpich
 %license LICENSE
 
-%files -n python3-%{name} -f %{pyproject_files}
+%files -n python3-pymbd -f %{pyproject_files}
 
 
 %changelog
