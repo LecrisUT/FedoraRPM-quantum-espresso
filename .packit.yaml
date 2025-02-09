@@ -1,4 +1,9 @@
 packages:
+  devicexlib:
+    paths: [ devicexlib ]
+    specfile_path: devicexlib.spec
+    upstream_package_name: devicexlib
+    downstream_package_name: devicexlib
   libmbd:
     paths: [ libmbd ]
     specfile_path: libmbd.spec
