@@ -1,3 +1,5 @@
+# Python bindings needs more work
+%bcond python 0
 %global         forgeurl https://github.com/libmbd/libmbd
 
 Name:           libmbd
@@ -54,6 +56,7 @@ Summary:        %{name} - mpich version
 
 This package contains the mpich version.
 
+%if %{with python}
 %package -n python3-pymbd
 Summary:        %{name} - python version
 
@@ -61,6 +64,7 @@ Summary:        %{name} - python version
 %{_description}
 
 This package contains the python package.c
+%endif
 
 
 %prep
@@ -74,9 +78,11 @@ echo "set(VERSION_TAG \"%{version}\")" > cmake/libMBDVersionTag.cmake
 %global _vpath_builddir %{_vendor}-%{_target_os}-build${MPI_SUFFIX:-_serial}
 
 
+%if %{with python}
 %generate_buildrequires
 export POETRY_DYNAMIC_VERSIONING_BYPASS=%{version}
 %pyproject_buildrequires -x mpi,test
+%endif
 
 
 %conf
@@ -111,8 +117,10 @@ for mpi in '' mpich openmpi; do
   %cmake_build
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
+%if %{with python}
 export POETRY_DYNAMIC_VERSIONING_BYPASS=%{version}
 %pyproject_wheel
+%endif
 
 
 %install
@@ -121,8 +129,10 @@ for mpi in '' mpich openmpi; do
   %cmake_install
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
+%if %{with python}
 %pyproject_install
 %pyproject_save_files -l pymbd
+%endif
 
 
 %check
@@ -131,7 +141,9 @@ for mpi in '' mpich openmpi; do
   %ctest
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
+%if %{with python}
 %pytest
+%endif
 
 
 %files
@@ -143,7 +155,9 @@ done
 %files mpich
 %license LICENSE
 
+%if %{with python}
 %files -n python3-pymbd -f %{pyproject_files}
+%endif
 
 
 %changelog
