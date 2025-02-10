@@ -98,7 +98,7 @@ for mpi in '' mpich openmpi; do
       "-DCMAKE_INSTALL_LIBDIR:PATH=lib"
       # TODO: Scalapack's CMake files are broken, need to use pkg-config instead
       # https://bugzilla.redhat.com/show_bug.cgi?id=2243083
-      "-DCMAKE_DISABLE_FIND_PACKAGE_scalpack=ON"
+      "-DCMAKE_DISABLE_FIND_PACKAGE_scalapack=ON"
     )
   else
     cmake_mpi_args=(
