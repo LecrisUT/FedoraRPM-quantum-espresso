@@ -75,6 +75,7 @@ echo "set(VERSION_TAG \"%{version}\")" > cmake/libMBDVersionTag.cmake
 
 
 %generate_buildrequires
+export POETRY_DYNAMIC_VERSIONING_BYPASS=%{version}
 %pyproject_buildrequires -x mpi,test
 
 
@@ -110,6 +111,7 @@ for mpi in '' mpich openmpi; do
   %cmake_build
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
+export POETRY_DYNAMIC_VERSIONING_BYPASS=%{version}
 %pyproject_wheel
 
 
