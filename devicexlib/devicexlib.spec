@@ -12,6 +12,9 @@ ExcludeArch:    %{ix86}
 
 Source:         %{forgesource}
 
+# Fix Fortran module build path and allow to install fortran modules
+Patch:          https://gitlab.com/max-centre/components/devicexlib/-/merge_requests/15.patch
+
 # TODO: Do a proper license review
 License:      %{shrink:
     MIT
@@ -40,7 +43,8 @@ deviceXlib, fortran library wrapping device-oriented routines and utilities
 %cmake \
     -G Ninja \
     -DDEVXLIB_ENABLE_ACC=OPENACC \
-    -DDEVXLIB_ENABLE_GPU_BLAS=ROCBLAS
+    -DDEVXLIB_ENABLE_GPU_BLAS=ROCBLAS \
+    -DCMAKE_INSTALL_MODULEDIR:PATH=%{_fmoddir}
 
 
 %build
