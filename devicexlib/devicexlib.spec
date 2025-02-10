@@ -23,7 +23,10 @@ BuildRequires:      ninja-build
 BuildRequires:      gcc-gfortran
 # Project dependencies
 BuildRequires:      flexiblas-devel
-BuildRequires:      rocblas-devel
+BuildRequires:      cmake(rocblas)
+# Missing implicit `cmake(hip)` dependency in rocblas
+# https://src.fedoraproject.org/rpms/rocblas/pull-request/2
+BuildRequires:      cmake(hip)
 
 %description
 deviceXlib, fortran library wrapping device-oriented routines and utilities
