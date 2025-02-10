@@ -37,7 +37,7 @@ deviceXlib, fortran library wrapping device-oriented routines and utilities
 %cmake \
     -G Ninja \
     -DDEVXLIB_ENABLE_ACC=OPENACC \
-    -DDEVXLIB_ENABLE_GPU_BLAS=rocblas
+    -DDEVXLIB_ENABLE_GPU_BLAS=ROCBLAS
 
 
 %build
