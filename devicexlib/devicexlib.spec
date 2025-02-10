@@ -23,6 +23,7 @@ BuildRequires:      ninja-build
 BuildRequires:      gcc-gfortran
 # Project dependencies
 BuildRequires:      flexiblas-devel
+BuildRequires:      rocblas-devel
 
 %description
 deviceXlib, fortran library wrapping device-oriented routines and utilities
@@ -34,7 +35,9 @@ deviceXlib, fortran library wrapping device-oriented routines and utilities
 
 %conf
 %cmake \
-    -G Ninja
+    -G Ninja \
+    -DDEVXLIB_ENABLE_ACC=OPENACC \
+    -DDEVXLIB_ENABLE_GPU_BLAS=rocblas
 
 
 %build
