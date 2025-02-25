@@ -14,6 +14,11 @@ packages:
     specfile_path: quantum-espresso.spec
     upstream_package_name: quantum-espresso
     downstream_package_name: quantum-espresso
+  scalapack:
+    paths: [ scalapack ]
+    specfile_path: scalapack.spec
+    upstream_package_name: scalapack
+    downstream_package_name: scalapack
 
 actions:
   get-current-version:
