@@ -248,6 +248,14 @@ for mpi in mpich openmpi; do
 done
 
 
+%check
+for mpi in mpich openmpi; do
+  [ -n "$mpi" ] && module load mpi/${mpi}-%{_arch}
+  %ctest
+  [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
+done
+
+
 %files common
 %doc README
 %{_includedir}/blacs/
