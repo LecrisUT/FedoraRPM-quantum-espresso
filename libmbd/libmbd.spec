@@ -14,6 +14,9 @@ ExcludeArch:    %{ix86}
 
 Source:         %{forgesource0}
 
+# Expose Fotran install module dir
+Patch:          https://github.com/libmbd/libmbd/pull/73.patch
+
 # TODO: Do a proper license review
 License:      %{shrink:
     MPL-2.0
@@ -95,6 +98,7 @@ for mpi in '' mpich openmpi; do
     cmake_mpi_args=(
       "-DENABLE_SCALAPACK_MPI:BOOL=ON"
       "-DCMAKE_INSTALL_PREFIX:PATH=${MPI_HOME}"
+      "-DCMAKE_INSTALL_MODULEDIR:PATH=${MPI_FORTRAN_MOD_DIR}"
       "-DCMAKE_INSTALL_LIBDIR:PATH=lib"
       # TODO: Scalapack's CMake files are broken, need to use pkg-config instead
       # https://bugzilla.redhat.com/show_bug.cgi?id=2243083
@@ -102,6 +106,7 @@ for mpi in '' mpich openmpi; do
     )
   else
     cmake_mpi_args=(
+      "-DCMAKE_INSTALL_MODULEDIR:PATH=%{_fmoddir}"
       "-DENABLE_SCALAPACK_MPI:BOOL=OFF"
     )
   fi
