@@ -2,12 +2,11 @@
 # Cannot de-bundle devicexlib. The project doesn't build properly and qe uses version 0.1
 # https://gitlab.com/max-centre/components/devicexlib/-/issues/20
 %global         forgeurl1 https://gitlab.com/max-centre/components/devicexlib
-%global         forgeurl2 https://github.com/libmbd/libmbd
 # Waiting on wannier90 4.0.0 and q-e to adapt to it
-%global         forgeurl3 https://github.com/wannier-developers/wannier90
+%global         forgeurl2 https://github.com/wannier-developers/wannier90
 
 Name:			quantum-espresso
-Version:		7.4
+Version:		7.4.1
 Release:		%autorelease
 Summary:		A suite for electronic-structure calculations and materials modeling
 # Results are incorrect for s390x, upstream does not support this architecture
@@ -15,14 +14,12 @@ ExcludeArch:    %{ix86} s390x
 
 %global         tag0 qe-%{version}
 %global         tag1 a6b89ef77b1ceda48e967921f1f5488d2df9226d
-%global         tag2 89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd
-%global         tag3 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
+%global         tag2 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
 %forgemeta -a
 
 # See bundling discussion in https://gitlab.com/QEF/q-e/-/issues/366
 Provides:               bundled(FoXlibf)
 Provides:               bundled(deviceXlib)
-Provides:               bundled(libmbd)
 
 # Automatically converted from old format: GPLv2+ - review is highly recommended.
 # TODO: Do a proper license re-review. Many are only SourceLicense, others are bundled
@@ -47,7 +44,6 @@ Source1:		pseudo.tar.gz
 # TODO: properly package and debundle external/* libraries
 Source2:		%{forgesource1}
 Source3:		%{forgesource2}
-Source4:		%{forgesource3}
 
 # Fix for python 3.13
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2559.patch
@@ -66,11 +62,14 @@ BuildRequires:		gcc-gfortran
 # Project dependencies
 BuildRequires:		fftw3-devel
 BuildRequires:		flexiblas-devel
+BuildRequires:      libmbd-devel
 # MPI variants
 BuildRequires:		openmpi-devel
 BuildRequires:		scalapack-openmpi-devel
+BuildRequires:      libmbd-openmpi-devel
 BuildRequires:		mpich-devel
 BuildRequires:		scalapack-mpich-devel
+BuildRequires:      libmbd-mpich-devel
 # Testuite dependenceis
 BuildRequires:		python3
 # To review
@@ -109,11 +108,7 @@ This package contains the mpich version.
 %prep
 %autosetup -p1 -n q-e-qe-%{version}
 tar -xf %{SOURCE2} --strip-components=1 -C external/devxlib
-tar -xf %{SOURCE3} --strip-components=1 -C external/mbd
-tar -xf %{SOURCE4} --strip-components=1 -C external/wannier90
-
-# See https://github.com/libmbd/libmbd/blob/89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd/devtools/source-dist.sh#L7
-echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag.cmake
+tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
 
 # Set unique build directories for each serial/mpi variant
 # $MPI_SUFFIX will be evaluated in the loops below, set by mpi modules
@@ -124,6 +119,7 @@ echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag
 cmake_common_args=(
   "-G Ninja"
   "-DQE_ENABLE_TEST:BOOL=ON"
+  "-DQE_MBD_INTERNAL:BOOL=OFF"
   "-DQE_FFTW_VENDOR:STRING=FFTW3"
   "-DQE_ENABLE_OPENMP:BOOL=ON"
   "-DQE_ENABLE_DOC:BOOL=OFF"
