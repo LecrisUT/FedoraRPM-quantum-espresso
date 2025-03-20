@@ -19,10 +19,12 @@ Patch:          https://github.com/libmbd/libmbd/pull/73.patch
 # Include SOVERSION
 Patch:          https://github.com/libmbd/libmbd/pull/74.patch
 
-# TODO: Do a proper license review
-License:      %{shrink:
-    MPL-2.0
-}
+# Everything is MPL-2.0 except for
+# - CC0-1.0: src/pymbd/vdw-params.csv
+# TODO: Mark the CC0-1.0 in License if vdw-params.csv is being packaged
+# https://github.com/libmbd/libmbd/issues/75
+SourceLicense:  MPL-2.0 AND CC0-1.0
+License:        MPL-2.0
 
 # Build system
 BuildRequires:      cmake
@@ -109,7 +111,7 @@ This package contains the python package.c
 %prep
 %autosetup -p1 -n libmbd-%{version}
 
-# See https://github.com/libmbd/libmbd/blob/89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd/devtools/source-dist.sh#L7
+# See devtools/source-dist.sh
 echo "set(VERSION_TAG \"%{version}\")" > cmake/libMBDVersionTag.cmake
 
 # Set unique build directories for each serial/mpi variant
