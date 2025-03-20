@@ -1,4 +1,6 @@
 %global         forgeurl0 https://gitlab.com/QEF/q-e
+# Cannot de-bundle devicexlib. The project doesn't build properly and qe uses version 0.1
+# https://gitlab.com/max-centre/components/devicexlib/-/issues/20
 %global         forgeurl1 https://gitlab.com/max-centre/components/devicexlib
 %global         forgeurl2 https://github.com/libmbd/libmbd
 %global         forgeurl3 https://github.com/wannier-developers/wannier90
