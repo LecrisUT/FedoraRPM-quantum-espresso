@@ -136,7 +136,11 @@ echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag
 cmake_common_args=(
   "-G Ninja"
   "-DQE_ENABLE_TEST:BOOL=ON"
+%if 0%{?fedora} < 43
+  "-DQE_MBD_INTERNAL:BOOL=ON"
+%else
   "-DQE_MBD_INTERNAL:BOOL=OFF"
+%endif
   "-DQE_FFTW_VENDOR:STRING=FFTW3"
   "-DQE_ENABLE_OPENMP:BOOL=ON"
   "-DQE_ENABLE_DOC:BOOL=OFF"
