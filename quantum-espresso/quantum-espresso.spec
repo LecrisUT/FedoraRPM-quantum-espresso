@@ -7,10 +7,10 @@
 # Libmbd does not build on Fedora<43 because of missing scalapack fixes
 %global         forgeurl3 https://github.com/libmbd/libmbd
 
-Name:			quantum-espresso
-Version:		7.4.1
-Release:		%autorelease
-Summary:		A suite for electronic-structure calculations and materials modeling
+Name:           quantum-espresso
+Version:        7.4.1
+Release:        %autorelease
+Summary:        A suite for electronic-structure calculations and materials modeling
 # Results are incorrect for s390x, upstream does not support this architecture
 ExcludeArch:    %{ix86} s390x
 
@@ -21,12 +21,12 @@ ExcludeArch:    %{ix86} s390x
 %forgemeta -a
 
 # See bundling discussion in https://gitlab.com/QEF/q-e/-/issues/366
-Provides:               bundled(FoXlibf)
-Provides:               bundled(deviceXlib)
+Provides:       bundled(FoXlibf)
+Provides:       bundled(deviceXlib)
 
 # Automatically converted from old format: GPLv2+ - review is highly recommended.
 # TODO: Do a proper license re-review. Many are only SourceLicense, others are bundled
-License:		%{shrink:
+License:  %{shrink:
     GPL-2.0-or-later
 }
 # BSD: PP/src/bgw2pw.f90
@@ -35,19 +35,17 @@ License:		%{shrink:
 # MIT: install/install-sh
 # zlib/libpng: clib/md5.c
 # zlib/libpng: clib/md5.h
-URL:			http://www.quantum-espresso.org/
-Source0:		%{forgesource0}
+URL:            http://www.quantum-espresso.org/
+Source0:        %{forgesource0}
 
 # Pseudopotentials used for tests
 # Currently these are retrieved by running the ctest with network enabled and archiving pseudo/ directory
 # Download issue: https://gitlab.com/QEF/q-e/-/issues/750
 # License issue:  https://gitlab.com/QEF/q-e/-/issues/751
-Source1:		pseudo.tar.gz
-
-# TODO: properly package and debundle external/* libraries
-Source2:		%{forgesource1}
-Source3:		%{forgesource2}
-Source4:		%{forgesource3}
+Source1:        pseudo.tar.gz
+Source2:        %{forgesource1}
+Source3:        %{forgesource2}
+Source4:        %{forgesource3}
 
 # Fix for python 3.13
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2559.patch
@@ -60,36 +58,41 @@ Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2561.patch
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2563.patch
 # Use libmbd cmake files
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2579.patch
+# Add SOVERSION to libraries
+# (Cherry-picked from https://gitlab.com/QEF/q-e/-/merge_requests/2580.patch)
+Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2580.patch
 
 # Build system
-BuildRequires:		cmake
-BuildRequires:		ninja-build
-BuildRequires:		gcc-gfortran
+BuildRequires:  cmake
+BuildRequires:  ninja-build
+BuildRequires:  gcc-gfortran
 # Project dependencies
-BuildRequires:		fftw3-devel
-BuildRequires:		flexiblas-devel
+BuildRequires:  fftw3-devel
+BuildRequires:  flexiblas-devel
 # MPI variants
-BuildRequires:		openmpi-devel
-BuildRequires:		scalapack-openmpi-devel
-BuildRequires:		mpich-devel
-BuildRequires:		scalapack-mpich-devel
+BuildRequires:  openmpi-devel
+BuildRequires:  scalapack-openmpi-devel
+BuildRequires:  mpich-devel
+BuildRequires:  scalapack-mpich-devel
 %if 0%{?fedora} < 43
-Provides:           bundled(libmbd)
+Provides:       bundled(libmbd)
 %else
-BuildRequires:      libmbd-devel
-BuildRequires:      libmbd-openmpi-devel
-BuildRequires:      libmbd-mpich-devel
+BuildRequires:  libmbd-devel
+BuildRequires:  libmbd-openmpi-devel
+BuildRequires:  libmbd-mpich-devel
 %endif
 # Testuite dependenceis
-BuildRequires:		python3
+BuildRequires:  python3
 # To review
-#BuildRequires:		python3-numpy
+#BuildRequires:  python3-numpy
 
 %global _description %{expand:
 QUANTUM ESPRESSO is an integrated suite of Open-Source computer codes for
 electronic-structure calculations and materials modeling at the nanoscale.
 It is based on density-functional theory, plane waves, and pseudopotentials.}
 
+%global _description_devel %{expand:
+Development files for %{name} package}
 
 %description
 %{_description}
@@ -98,21 +101,51 @@ Serial version.
 
 
 %package openmpi
-Summary:		%{name} - openmpi version
+Summary:        %{name} - openmpi version
 
 %description openmpi
 %{_description}
 
-This package contains the openmpi version.
+OpenMPI version.
 
 
 %package mpich
-Summary:		%{name} - mpich version
+Summary:        %{name} - mpich version
 
 %description mpich
 %{_description}
 
-This package contains the mpich version.
+MPICH version.
+
+%package devel
+Summary:        Development files for %{name}
+
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description devel
+%{_description_devel}
+
+Serial version.
+
+%package openmpi-devel
+Summary:        Development files for %{name} - openmpi version
+
+Requires:       %{name}-openmpi%{?_isa} = %{version}-%{release}
+
+%description openmpi-devel
+%{_description_devel}
+
+OpenMPI version.
+
+%package mpich-devel
+Summary:        Development files for %{name} - mpich version
+
+Requires:       %{name}-mpich%{?_isa} = %{version}-%{release}
+
+%description devel
+%{_description_devel}
+
+MPICH version.
 
 
 %prep
@@ -196,23 +229,13 @@ for mpi in '' mpich openmpi; do
   %cmake_install
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
-# TODO: Properly package -devel files
-# - share/GUI: That thing is not packaged according to guidelines
-rm -r %{buildroot}%{_includedir}
+# Deduplicate python files
+rm -r %{buildroot}%{_libdir}/openmpi/bin/epw_pp.py
+rm -r %{buildroot}%{_libdir}/mpich/bin/epw_pp.py
+# Drop share/GUI: That thing is not packaged according to guidelines
 rm -r %{buildroot}%{_datadir}/GUI
-rm -r %{buildroot}%{_libdir}/cmake
-rm -r %{buildroot}%{_libdir}/pkgconfig
-rm -r %{buildroot}%{_fmoddir}
-rm -r %{buildroot}%{_libdir}/openmpi/bin/*.py
-rm -r %{buildroot}%{_libdir}/openmpi/include
 rm -r %{buildroot}%{_libdir}/openmpi/share/GUI
-rm -r %{buildroot}%{_libdir}/openmpi/lib/cmake
-rm -r %{buildroot}%{_libdir}/openmpi/lib/pkgconfig
-rm -r %{buildroot}%{_libdir}/mpich/bin/*.py
-rm -r %{buildroot}%{_libdir}/mpich/include
 rm -r %{buildroot}%{_libdir}/mpich/share/GUI
-rm -r %{buildroot}%{_libdir}/mpich/lib/cmake
-rm -r %{buildroot}%{_libdir}/mpich/lib/pkgconfig
 
 
 %check
@@ -233,21 +256,38 @@ done
 %license License
 %{_bindir}/*.x
 %{_bindir}/epw_pp.py
-# TODO: These need SOVERSION and a split for -devel
-%{_libdir}/*.so
+%{_libdir}/*.so.*
 
 %files openmpi
 %license License
 %{_libdir}/openmpi/bin/*.x
-# TODO: These need SOVERSION and a split for -devel
-%{_libdir}/openmpi/lib/*.so
+%{_libdir}/openmpi/lib/*.so.*
 
 %files mpich
 %license License
 %{_libdir}/mpich/bin/*.x
-# TODO: These need SOVERSION and a split for -devel
-%{_libdir}/mpich/lib/*.so
+%{_libdir}/mpich/lib/*.so.*
 
+%files devel
+%{_includedir}/qe
+%{_fmoddir}/qe
+%{_libdir}/*.so
+%{_libdir}/cmake
+%{_libdir}/pkgconfig
+
+%files openmpi-devel
+%{_libdir}/openmpi/lib/*.so
+%{_libdir}/openmpi/lib/cmake
+%{_libdir}/openmpi/lib/pkgconfig
+%{_fmoddir}/openmpi/qe
+%{_libdir}/openmpi/include/qe
+
+%files mpich-devel
+%{_libdir}/mpich/lib/*.so
+%{_libdir}/mpich/lib/cmake
+%{_libdir}/mpich/lib/pkgconfig
+%{_fmoddir}/mpich/qe
+%{_libdir}/mpich/include/qe
 
 %changelog
 %autochangelog
