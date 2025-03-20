@@ -6,7 +6,7 @@ Name:           libmbd
 Version:        0.13.0
 Release:        %autorelease
 Summary:        Many-body dispersion library
-URL:      	    https://github.com/libmbd/libmbd
+URL:            https://github.com/libmbd/libmbd
 ExcludeArch:    %{ix86}
 
 %global         tag %{version}
@@ -27,16 +27,16 @@ SourceLicense:  MPL-2.0 AND CC0-1.0
 License:        MPL-2.0
 
 # Build system
-BuildRequires:      cmake
-BuildRequires:      ninja-build
-BuildRequires:      gcc-gfortran
+BuildRequires:  cmake
+BuildRequires:  ninja-build
+BuildRequires:  gcc-gfortran
 # Project dependencies
-BuildRequires:      flexiblas-devel
+BuildRequires:  flexiblas-devel
 # MPI variants
-BuildRequires:      openmpi-devel
-BuildRequires:      scalapack-openmpi-devel
-BuildRequires:      mpich-devel
-BuildRequires:      scalapack-mpich-devel
+BuildRequires:  openmpi-devel
+BuildRequires:  scalapack-openmpi-devel
+BuildRequires:  mpich-devel
+BuildRequires:  scalapack-mpich-devel
 
 %global _description %{expand:
 libMBD implements the many-body dispersion (MBD) method in several programming
