@@ -16,6 +16,8 @@ Source:         %{forgesource0}
 
 # Expose Fotran install module dir
 Patch:          https://github.com/libmbd/libmbd/pull/73.patch
+# Include SOVERSION
+Patch:          https://github.com/libmbd/libmbd/pull/74.patch
 
 # TODO: Do a proper license review
 License:      %{shrink:
@@ -38,6 +40,9 @@ BuildRequires:      scalapack-mpich-devel
 libMBD implements the many-body dispersion (MBD) method in several programming
 languages and frameworks}
 
+%global _description_devel %{expand:
+Development files for %{name} package}
+
 %description
 %{_description}
 
@@ -49,7 +54,7 @@ Summary:        %{name} - openmpi version
 %description openmpi
 %{_description}
 
-This package contains the openmpi version.
+OpenMPI version.
 
 %package mpich
 Summary:        %{name} - mpich version
@@ -57,7 +62,38 @@ Summary:        %{name} - mpich version
 %description mpich
 %{_description}
 
-This package contains the mpich version.
+MPICH version.
+
+%package devel
+Summary:        Development files for %{name}
+
+Requires:       %{name}%{?_isa} = %{version}-%{release}
+
+%description devel
+%{_description_devel}
+
+Serial version.
+
+%package openmpi-devel
+Summary:        Development files for %{name} - openmpi version
+
+Requires:       %{name}-openmpi%{?_isa} = %{version}-%{release}
+
+%description openmpi-devel
+%{_description_devel}
+
+OpenMPI version.
+
+%package mpich-devel
+Summary:        Development files for %{name} - mpich version
+
+Requires:       %{name}-mpich%{?_isa} = %{version}-%{release}
+
+%description mpich-devel
+%{_description_devel}
+
+MPICH version.
+
 
 %if %{with python}
 %package -n python3-pymbd
@@ -156,12 +192,33 @@ done
 
 %files
 %license LICENSE
+%{_libdir}/libmbd.so.*
 
 %files openmpi
 %license LICENSE
+%{_libdir}/openmpi/lib/libmbd.so.*
 
 %files mpich
 %license LICENSE
+%{_libdir}/mpich/lib/libmbd.so.*
+
+%files devel
+%{_fmoddir}/mbd/
+%{_includedir}/mbd/
+%{_libdir}/libmbd.so
+%{_libdir}/cmake/mbd/
+
+%files openmpi-devel
+%{_fmoddir}/openmpi/mbd/
+%{_libdir}/openmpi/include/mbd/
+%{_libdir}/openmpi/lib/libmbd.so
+%{_libdir}/openmpi/lib/cmake/mbd/
+
+%files mpich-devel
+%{_fmoddir}/mpich/mbd/
+%{_libdir}/mpich/include/mbd/
+%{_libdir}/mpich/lib/libmbd.so
+%{_libdir}/mpich/lib/cmake/mbd/
 
 %if %{with python}
 %files -n python3-pymbd -f %{pyproject_files}

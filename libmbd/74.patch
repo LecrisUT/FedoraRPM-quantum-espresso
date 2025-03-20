@@ -1,0 +1,25 @@
+From 890776a536f0a21e60235ff7ad52a185c24487a2 Mon Sep 17 00:00:00 2001
+From: Cristian Le <git@lecris.dev>
+Date: Thu, 20 Mar 2025 11:06:32 +0100
+Subject: [PATCH] Include a SOVERSION to the library
+
+---
+ src/CMakeLists.txt | 5 +++++
+ 1 file changed, 5 insertions(+)
+
+diff --git a/src/CMakeLists.txt b/src/CMakeLists.txt
+index 6dcd03dd..ebd0f6a9 100644
+--- a/src/CMakeLists.txt
++++ b/src/CMakeLists.txt
+@@ -24,6 +24,11 @@ add_library(mbd
+     mbd_vdw_param.f90
+ )
+ 
++set_target_properties(mbd PROPERTIES
++    VERSION ${PROJECT_VERSION}
++    SOVERSION ${PROJECT_VERSION_MAJOR}
++)
++
+ if(ENABLE_SCALAPACK_MPI)
+     target_sources(mbd PRIVATE mbd_mpi.F90 mbd_blacs.f90 mbd_scalapack.f90)
+     if(NOT MPI_Fortran_HAVE_F08_MODULE)
