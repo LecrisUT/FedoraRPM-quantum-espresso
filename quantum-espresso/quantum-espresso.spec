@@ -142,7 +142,7 @@ Summary:        Development files for %{name} - mpich version
 
 Requires:       %{name}-mpich%{?_isa} = %{version}-%{release}
 
-%description devel
+%description mpich-devel
 %{_description_devel}
 
 MPICH version.
