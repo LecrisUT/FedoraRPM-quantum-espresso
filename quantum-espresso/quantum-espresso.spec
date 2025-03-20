@@ -3,6 +3,7 @@
 # https://gitlab.com/max-centre/components/devicexlib/-/issues/20
 %global         forgeurl1 https://gitlab.com/max-centre/components/devicexlib
 %global         forgeurl2 https://github.com/libmbd/libmbd
+# Waiting on wannier90 4.0.0 and q-e to adapt to it
 %global         forgeurl3 https://github.com/wannier-developers/wannier90
 
 Name:			quantum-espresso
