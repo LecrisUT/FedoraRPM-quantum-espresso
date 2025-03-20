@@ -237,6 +237,12 @@ rm -r %{buildroot}%{_datadir}/GUI
 rm -r %{buildroot}%{_libdir}/openmpi/share/GUI
 rm -r %{buildroot}%{_libdir}/mpich/share/GUI
 
+%if 0%{?fedora} < 43
+rm -r %{buildroot}%{_includedir}/mbd
+rm -r %{buildroot}%{_libdir}/openmpi/include/mbd
+rm -r %{buildroot}%{_libdir}/mpich/include/mbd
+%endif
+
 
 %check
 tar -xf %{SOURCE1}
