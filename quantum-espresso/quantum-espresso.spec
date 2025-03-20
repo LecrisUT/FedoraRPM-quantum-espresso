@@ -4,6 +4,8 @@
 %global         forgeurl1 https://gitlab.com/max-centre/components/devicexlib
 # Waiting on wannier90 4.0.0 and q-e to adapt to it
 %global         forgeurl2 https://github.com/wannier-developers/wannier90
+# Libmbd does not build on Fedora<43 because of missing scalapack fixes
+%global         forgeurl3 https://github.com/libmbd/libmbd
 
 Name:			quantum-espresso
 Version:		7.4.1
@@ -15,6 +17,7 @@ ExcludeArch:    %{ix86} s390x
 %global         tag0 qe-%{version}
 %global         tag1 a6b89ef77b1ceda48e967921f1f5488d2df9226d
 %global         tag2 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
+%global         tag3 89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd
 %forgemeta -a
 
 # See bundling discussion in https://gitlab.com/QEF/q-e/-/issues/366
@@ -44,6 +47,7 @@ Source1:		pseudo.tar.gz
 # TODO: properly package and debundle external/* libraries
 Source2:		%{forgesource1}
 Source3:		%{forgesource2}
+Source4:		%{forgesource3}
 
 # Fix for python 3.13
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2559.patch
@@ -54,6 +58,8 @@ Patch:          2560.patch
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2561.patch
 # Fix installation issue because target is C not Fortran
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2563.patch
+# Use libmbd cmake files
+Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2579.patch
 
 # Build system
 BuildRequires:		cmake
@@ -62,14 +68,18 @@ BuildRequires:		gcc-gfortran
 # Project dependencies
 BuildRequires:		fftw3-devel
 BuildRequires:		flexiblas-devel
-BuildRequires:      libmbd-devel
 # MPI variants
 BuildRequires:		openmpi-devel
 BuildRequires:		scalapack-openmpi-devel
-BuildRequires:      libmbd-openmpi-devel
 BuildRequires:		mpich-devel
 BuildRequires:		scalapack-mpich-devel
+%if 0%{?fedora} < 43
+Provides:           bundled(libmbd)
+%else
+BuildRequires:      libmbd-devel
+BuildRequires:      libmbd-openmpi-devel
 BuildRequires:      libmbd-mpich-devel
+%endif
 # Testuite dependenceis
 BuildRequires:		python3
 # To review
@@ -109,6 +119,13 @@ This package contains the mpich version.
 %autosetup -p1 -n q-e-qe-%{version}
 tar -xf %{SOURCE2} --strip-components=1 -C external/devxlib
 tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
+
+%if 0%{?fedora} < 43
+tar -xf %{SOURCE4} --strip-components=1 -C external/mbd
+
+# See https://github.com/libmbd/libmbd/blob/89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd/devtools/source-dist.sh#L7
+echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag.cmake
+%endif
 
 # Set unique build directories for each serial/mpi variant
 # $MPI_SUFFIX will be evaluated in the loops below, set by mpi modules
@@ -168,7 +185,6 @@ for mpi in '' mpich openmpi; do
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
 # TODO: Properly package -devel files
-# - libmbd must be unbundled and packaged properly
 # - share/GUI: That thing is not packaged according to guidelines
 rm -r %{buildroot}%{_includedir}
 rm -r %{buildroot}%{_datadir}/GUI
