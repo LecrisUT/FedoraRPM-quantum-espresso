@@ -252,8 +252,13 @@ export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe
 
 for mpi in '' mpich openmpi; do
   [ -n "$mpi" ] && module load mpi/${mpi}-%{_arch}
-  # TODO: Forward test failure issues to upstream
+%if 0%{?fedora} < 42
+  %ctest
+%else
+  # Upstream does not want to respond to gfortran-15 test failures
+  # https://gitlab.com/QEF/q-e/-/issues/769
   %ctest || true
+%endif
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
 
