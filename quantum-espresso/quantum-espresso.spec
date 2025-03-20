@@ -133,6 +133,14 @@ echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag
 
 
 %conf
+# Build fails with the default flags
+# Original: FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules '
+# Dropping -Wall
+# https://gitlab.com/QEF/q-e/-/issues/768
+%if 0%{?fedora} == 43
+%global _warning_options ""
+%endif
+
 cmake_common_args=(
   "-G Ninja"
   "-DQE_ENABLE_TEST:BOOL=ON"
