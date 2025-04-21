@@ -29,6 +29,7 @@ License:        MPL-2.0
 # Build system
 BuildRequires:  cmake
 BuildRequires:  ninja-build
+BuildRequires:  gcc
 BuildRequires:  gcc-gfortran
 # Project dependencies
 BuildRequires:  flexiblas-devel
