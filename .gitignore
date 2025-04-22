@@ -1,0 +1,7 @@
+*.tar.gz
+!/quantum-espresso/pseudo.tar.gz
+*.tar.bz2
+*.patch
+!/quantum-espresso/2560.patch
+*.rpm
+/*/*/
