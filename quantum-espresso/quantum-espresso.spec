@@ -14,7 +14,7 @@ Summary:        A suite for electronic-structure calculations and materials mode
 # Results are incorrect for s390x, upstream does not support this architecture
 ExcludeArch:    %{ix86} s390x
 
-%global         tag0 qe-%{version}
+%global         tag0 44814c42ea03e65f1b453de3b473955c1bd1f127
 %global         tag1 a6b89ef77b1ceda48e967921f1f5488d2df9226d
 %global         tag2 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
 %global         tag3 89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd
