@@ -149,7 +149,7 @@ MPICH version.
 
 
 %prep
-%autosetup -p1 -n q-e-qe-%{version}
+%autosetup -p1 -n q-e-%{tag0}
 tar -xf %{SOURCE2} --strip-components=1 -C external/devxlib
 tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
 
