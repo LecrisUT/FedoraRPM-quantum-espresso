@@ -2,6 +2,8 @@
 %bcond python 0
 %global         forgeurl https://github.com/libmbd/libmbd
 
+%global         soversion 0
+
 Name:           libmbd
 Version:        0.13.0
 Release:        %autorelease
@@ -195,15 +197,18 @@ done
 
 %files
 %license LICENSE
-%{_libdir}/libmbd.so.*
+%{_libdir}/libmbd.so.%{soversion}
+%{_libdir}/libmbd.so.%{soversion}.*
 
 %files openmpi
 %license LICENSE
-%{_libdir}/openmpi/lib/libmbd.so.*
+%{_libdir}/openmpi/lib/libmbd.so.%{soversion}
+%{_libdir}/openmpi/lib/libmbd.so.%{soversion}.*
 
 %files mpich
 %license LICENSE
-%{_libdir}/mpich/lib/libmbd.so.*
+%{_libdir}/mpich/lib/libmbd.so.%{soversion}
+%{_libdir}/mpich/lib/libmbd.so.%{soversion}.*
 
 %files devel
 %{_fmoddir}/mbd/
