@@ -9,7 +9,9 @@ Version:        0.13.0
 Release:        %autorelease
 Summary:        Many-body dispersion library
 URL:            https://github.com/libmbd/libmbd
-ExcludeArch:    %{ix86}
+# Test failures on s390x
+# https://github.com/libmbd/libmbd/issues/76
+ExcludeArch:    %{ix86} s390x
 
 %global         tag %{version}
 %forgemeta -a
@@ -74,6 +76,9 @@ Summary:        Development files for %{name}
 
 Requires:       %{name}%{?_isa} = %{version}-%{release}
 
+# Workaround for the gfrotran directory ownership
+Requires:       gcc-gfortran
+
 %description devel
 %{_description_devel}
 
@@ -83,6 +88,7 @@ Serial version.
 Summary:        Development files for %{name} - openmpi version
 
 Requires:       %{name}-openmpi%{?_isa} = %{version}-%{release}
+Requires:       openmpi-devel
 
 %description openmpi-devel
 %{_description_devel}
@@ -93,6 +99,7 @@ OpenMPI version.
 Summary:        Development files for %{name} - mpich version
 
 Requires:       %{name}-mpich%{?_isa} = %{version}-%{release}
+Requires:       mpich-devel
 
 %description mpich-devel
 %{_description_devel}
