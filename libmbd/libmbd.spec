@@ -1,4 +1,7 @@
 # Python bindings needs more work
+# - numpy 2.x compatibility may not be there
+# - mpi4py may not work properly
+# - make sure the manual build system pick up the system library
 %bcond python 0
 %global         forgeurl https://github.com/libmbd/libmbd
 
@@ -12,6 +15,7 @@ URL:            https://github.com/libmbd/libmbd
 # Test failures on s390x
 # https://github.com/libmbd/libmbd/issues/76
 ExcludeArch:    %{ix86} s390x
+License:        MPL-2.0
 
 %global         tag %{version}
 %forgemeta -a
@@ -22,13 +26,6 @@ Source:         %{forgesource0}
 Patch:          https://github.com/libmbd/libmbd/pull/73.patch
 # Include SOVERSION
 Patch:          https://github.com/libmbd/libmbd/pull/74.patch
-
-# Everything is MPL-2.0 except for
-# - CC0-1.0: src/pymbd/vdw-params.csv
-# TODO: Mark the CC0-1.0 in License if vdw-params.csv is being packaged
-# https://github.com/libmbd/libmbd/issues/75
-SourceLicense:  MPL-2.0 AND CC0-1.0
-License:        MPL-2.0
 
 # Build system
 BuildRequires:  cmake
