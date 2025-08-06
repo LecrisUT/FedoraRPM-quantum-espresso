@@ -1,13 +1,4 @@
 packages:
-  libmbd:
-    paths: [ libmbd ]
-    specfile_path: libmbd.spec
-    upstream_package_name: libmbd
-    downstream_package_name: libmbd
-    targets:
-      - fedora-rawhide-x86_64
-      - fedora-rawhide-aarch64
-      - fedora-rawhide-ppc64le
   quantum-espresso:
     paths: [ quantum-espresso ]
     specfile_path: quantum-espresso.spec
