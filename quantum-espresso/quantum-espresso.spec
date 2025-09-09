@@ -8,13 +8,13 @@
 %global         forgeurl3 https://github.com/libmbd/libmbd
 
 Name:           quantum-espresso
-Version:        7.4.1
+Version:        7.5
 Release:        %autorelease
 Summary:        A suite for electronic-structure calculations and materials modeling
 # Results are incorrect for s390x, upstream does not support this architecture
 ExcludeArch:    %{ix86} s390x
 
-%global         tag0 44814c42ea03e65f1b453de3b473955c1bd1f127
+%global         tag0 qe-%{version}
 %global         tag1 a6b89ef77b1ceda48e967921f1f5488d2df9226d
 %global         tag2 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
 %global         tag3 89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd
@@ -47,20 +47,8 @@ Source2:        %{forgesource1}
 Source3:        %{forgesource2}
 Source4:        %{forgesource3}
 
-# Fix for python 3.13
-Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2559.patch
-# Expose Fortran module install directory
-# (Cherry-picked from https://gitlab.com/QEF/q-e/-/merge_requests/2560.patch)
-Patch:          2560.patch
 # Allow building without git
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2561.patch
-# Fix installation issue because target is C not Fortran
-Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2563.patch
-# Use libmbd cmake files
-Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2579.patch
-# Add SOVERSION to libraries
-# (Cherry-picked from https://gitlab.com/QEF/q-e/-/merge_requests/2580.patch)
-Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2580.patch
 
 # Build system
 BuildRequires:  cmake
