@@ -4,8 +4,6 @@
 %global         forgeurl1 https://gitlab.com/max-centre/components/devicexlib
 # Waiting on wannier90 4.0.0 and q-e to adapt to it
 %global         forgeurl2 https://github.com/wannier-developers/wannier90
-# Libmbd does not build on Fedora<43 because of missing scalapack fixes
-%global         forgeurl3 https://github.com/libmbd/libmbd
 
 Name:           quantum-espresso
 Version:        7.5
@@ -17,7 +15,6 @@ ExcludeArch:    %{ix86} s390x
 %global         tag0 qe-%{version}
 %global         tag1 a6b89ef77b1ceda48e967921f1f5488d2df9226d
 %global         tag2 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
-%global         tag3 89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd
 %forgemeta -a
 
 # See bundling discussion in https://gitlab.com/QEF/q-e/-/issues/366
@@ -45,7 +42,6 @@ Source0:        %{forgesource0}
 Source1:        pseudo.tar.gz
 Source2:        %{forgesource1}
 Source3:        %{forgesource2}
-Source4:        %{forgesource3}
 
 # Allow building without git
 Patch:          https://gitlab.com/QEF/q-e/-/merge_requests/2561.patch
@@ -62,13 +58,9 @@ BuildRequires:  openmpi-devel
 BuildRequires:  scalapack-openmpi-devel
 BuildRequires:  mpich-devel
 BuildRequires:  scalapack-mpich-devel
-%if 0%{?fedora} < 43
-Provides:       bundled(libmbd)
-%else
 BuildRequires:  libmbd-devel
 BuildRequires:  libmbd-openmpi-devel
 BuildRequires:  libmbd-mpich-devel
-%endif
 # Testuite dependenceis
 BuildRequires:  python3
 # To review
@@ -141,13 +133,6 @@ MPICH version.
 tar -xf %{SOURCE2} --strip-components=1 -C external/devxlib
 tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
 
-%if 0%{?fedora} < 43
-tar -xf %{SOURCE4} --strip-components=1 -C external/mbd
-
-# See https://github.com/libmbd/libmbd/blob/89a3cc199c0a200c9f0f688c3229ef6b9a8d63bd/devtools/source-dist.sh#L7
-echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag.cmake
-%endif
-
 # Set unique build directories for each serial/mpi variant
 # $MPI_SUFFIX will be evaluated in the loops below, set by mpi modules
 %global _vpath_builddir %{_vendor}-%{_target_os}-build${MPI_SUFFIX:-_serial}
@@ -165,11 +150,7 @@ echo "set(VERSION_TAG \"0.12.8-89a3cc1\")" > external/mbd/cmake/libMBDVersionTag
 cmake_common_args=(
   "-G Ninja"
   "-DQE_ENABLE_TEST:BOOL=ON"
-%if 0%{?fedora} < 43
-  "-DQE_MBD_INTERNAL:BOOL=ON"
-%else
   "-DQE_MBD_INTERNAL:BOOL=OFF"
-%endif
   "-DQE_FFTW_VENDOR:STRING=FFTW3"
   "-DQE_ENABLE_OPENMP:BOOL=ON"
   "-DQE_ENABLE_DOC:BOOL=OFF"
@@ -225,12 +206,6 @@ rm -r %{buildroot}%{_datadir}/GUI
 rm -r %{buildroot}%{_libdir}/openmpi/share/GUI
 rm -r %{buildroot}%{_libdir}/mpich/share/GUI
 
-%if 0%{?fedora} < 43
-rm -r %{buildroot}%{_includedir}/mbd
-rm -r %{buildroot}%{_libdir}/openmpi/include/mbd
-rm -r %{buildroot}%{_libdir}/mpich/include/mbd
-%endif
-
 
 %check
 tar -xf %{SOURCE1}
@@ -240,13 +215,10 @@ export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe
 
 for mpi in '' mpich openmpi; do
   [ -n "$mpi" ] && module load mpi/${mpi}-%{_arch}
-%if 0%{?fedora} < 42
   %ctest
-%else
   # Upstream does not want to respond to gfortran-15 test failures
   # https://gitlab.com/QEF/q-e/-/issues/769
   %ctest || true
-%endif
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
 
