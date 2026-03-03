@@ -1,21 +1,25 @@
 %global         forgeurl0 https://gitlab.com/QEF/q-e
+%global         version0  7.5
+%global         date      20260303
+%global         commit0   c9b89a71bc7d4512e05398adb77ce8367873c5a8
+
 # Cannot de-bundle devicexlib. The project doesn't build properly and qe uses version 0.1
 # https://gitlab.com/max-centre/components/devicexlib/-/issues/20
 %global         forgeurl1 https://gitlab.com/max-centre/components/devicexlib
+%global         commit1   a6b89ef77b1ceda48e967921f1f5488d2df9226d
+
 # Waiting on wannier90 4.0.0 and q-e to adapt to it
 %global         forgeurl2 https://github.com/wannier-developers/wannier90
+%global         commit2   1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
+
+%forgemeta -a
 
 Name:           quantum-espresso
-Version:        7.5
+Version:        %forgeversion
 Release:        %autorelease
 Summary:        A suite for electronic-structure calculations and materials modeling
 # Results are incorrect for s390x, upstream does not support this architecture
 ExcludeArch:    %{ix86} s390x
-
-%global         tag0 qe-%{version}
-%global         tag1 a6b89ef77b1ceda48e967921f1f5488d2df9226d
-%global         tag2 1d6b187374a2d50b509e5e79e2cab01a79ff7ce1
-%forgemeta -a
 
 # See bundling discussion in https://gitlab.com/QEF/q-e/-/issues/366
 Provides:       bundled(FoXlibf)
@@ -129,7 +133,7 @@ MPICH version.
 
 
 %prep
-%autosetup -p1 -n q-e-%{tag0}
+%forgeautosetup -p1
 tar -xf %{SOURCE2} --strip-components=1 -C external/devxlib
 tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
 
