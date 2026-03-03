@@ -151,6 +151,8 @@ tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
 %global _warning_options ""
 %endif
 
+export LDFLAGS="$LDFLAGS -z noexecstack"
+
 cmake_common_args=(
   "-G Ninja"
   "-DQE_ENABLE_TEST:BOOL=ON"
