@@ -1,7 +1,6 @@
 %global         forgeurl0 https://gitlab.com/QEF/q-e
 %global         version0  7.5
-%global         date      20260303
-%global         commit0   c9b89a71bc7d4512e05398adb77ce8367873c5a8
+%global         tag0      qe-%{version0}
 
 # Cannot de-bundle devicexlib. The project doesn't build properly and qe uses version 0.1
 # https://gitlab.com/max-centre/components/devicexlib/-/issues/20
