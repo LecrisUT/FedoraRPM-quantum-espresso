@@ -142,14 +142,7 @@ tar -xf %{SOURCE3} --strip-components=1 -C external/wannier90
 
 
 %conf
-# Build fails with the default flags
-# Original: FFLAGS='-O2 -flto=auto -ffat-lto-objects -fexceptions -g -grecord-gcc-switches -pipe -Wall -Wp,-U_FORTIFY_SOURCE,-D_FORTIFY_SOURCE=3 -Wp,-D_GLIBCXX_ASSERTIONS -specs=/usr/lib/rpm/redhat/redhat-hardened-cc1 -fstack-protector-strong -specs=/usr/lib/rpm/redhat/redhat-annobin-cc1  -m64 -march=x86-64 -mtune=generic -fasynchronous-unwind-tables -fstack-clash-protection -fcf-protection -mtls-dialect=gnu2 -fno-omit-frame-pointer -mno-omit-leaf-frame-pointer -I/usr/lib64/gfortran/modules '
-# Dropping -Wall
-# https://gitlab.com/QEF/q-e/-/issues/768
-%if 0%{?fedora} == 43
-%global _warning_options ""
-%endif
-
+# Temporary fix to the "executable .note.GNU-stack section" issue
 export LDFLAGS="$LDFLAGS -z noexecstack"
 
 cmake_common_args=(
@@ -218,12 +211,13 @@ tar -xf %{SOURCE1}
 # Make sure mpi variants run oversubscribed
 export PRTE_MCA_rmaps_default_mapping_policy=:oversubscribe
 
+CTEST_ARGS=""
+# Skip pw_plugins: Seems the associated tests were not added
+CTEST_ARGS="$CTEST_ARGS -LE pw_plugins"
+
 for mpi in '' mpich openmpi; do
   [ -n "$mpi" ] && module load mpi/${mpi}-%{_arch}
-  %ctest
-  # Upstream does not want to respond to gfortran-15 test failures
-  # https://gitlab.com/QEF/q-e/-/issues/769
-  %ctest || true
+  %ctest $CTEST_ARGS
   [ -n "$mpi" ] && module unload mpi/${mpi}-%{_arch}
 done
 
